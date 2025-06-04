@@ -5,13 +5,15 @@ import Image from "next/image";
 import kotImage from "@/public/images/kota.jpeg";
 import maniya from "@/public/images/maniya.jpg";
 import dilshan from "@/public/images/dilshan.png";
+import lochi from "@/public/images/lochi.jpg";
+import kaali from "@/public/images/kaali.jpeg";
 
 const creators = [
   { id: 1, name: "Kota", image: kotImage },
   { id: 2, name: "Maniya", image: maniya },
   { id: 3, name: "Dilshan", image: dilshan },
-  { id: 4, name: "Kota", image: kotImage },
-  { id: 5, name: "Maniya", image: maniya },
+  { id: 4, name: "Lochi", image: lochi },
+  { id: 5, name: "Kaali", image: kaali },
 ];
 
 export default function CreatorCarousel() {
