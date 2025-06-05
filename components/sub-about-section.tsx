@@ -33,10 +33,11 @@ export default function SubAboutSection() {
   const [selectedFeature, setSelectedFeature] = useState("inspiration");
 
   return (
-    <section id="sub-about" className="bg-black py-20">
+    <section id="sub-about" className="bg-black pb-12">
       <div className="container mx-auto px-6 lg:px-20">
-        <div className="mb-12">
-          <p className="text-xl text-gray-400">The Evolution of Creativity</p>
+        <div className="text-sm text-gray-400 mb-4 flex items-center">
+          <div className="w-8 h-px bg-white mr-3"></div>
+          <span>What to expect</span>
         </div>
 
         <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-8">

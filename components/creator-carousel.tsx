@@ -22,40 +22,90 @@ export default function CreatorCarousel() {
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentIndex((prev) => (prev + 1) % creators.length);
-    }, 3000);
+    }, 4000);
 
     return () => clearInterval(interval);
   }, []);
 
-  return (
-    <div className="flex items-center justify-center space-x-4 mt-8">
-      {creators.map((creator, index) => {
-        const isCenter = index === currentIndex;
-        const isVisible =
-          index === currentIndex ||
-          index === (currentIndex - 1 + creators.length) % creators.length ||
-          index === (currentIndex + 1) % creators.length;
+  const getVisibleCreators = () => {
+    const visible = [];
+    for (let i = -2; i <= 2; i++) {
+      const index = (currentIndex + i + creators.length) % creators.length;
+      visible.push({
+        ...creators[index],
+        position: i,
+        isCenter: i === 0,
+      });
+    }
+    return visible;
+  };
 
-        if (!isVisible) return null;
+  return (
+    <div className="flex items-center justify-center space-x-6 mt-12 px-4">
+      {getVisibleCreators().map((creator, index) => {
+        const { position, isCenter } = creator;
+
+        // Calculate scale and opacity based on position
+        let scale = 1;
+        let opacity = 0.4;
+        let zIndex = 1;
+
+        if (isCenter) {
+          scale = 1.4;
+          opacity = 1;
+          zIndex = 10;
+        } else if (Math.abs(position) === 1) {
+          scale = 1.1;
+          opacity = 0.8;
+          zIndex = 5;
+        } else {
+          scale = 0.9;
+          opacity = 0.5;
+          zIndex = 1;
+        }
 
         return (
           <div
-            key={creator.id}
-            className={`transition-all duration-500 ${
-              isCenter ? "scale-125 opacity-100 z-10" : "scale-90 opacity-60"
-            }`}
+            key={`${creator.id}-${currentIndex}`}
+            className="flex flex-col items-center transition-all duration-700 ease-in-out transform"
+            style={{
+              transform: `scale(${scale})`,
+              opacity,
+              zIndex,
+            }}
           >
-            <div className="text-center">
-              <div className="relative">
+            <div className="relative group">
+              <div className="relative overflow-hidden rounded-full border-4 border-red-500 shadow-2xl">
                 <Image
                   src={creator.image || "/placeholder.svg"}
                   alt={creator.name}
-                  width={isCenter ? 120 : 80}
-                  height={isCenter ? 120 : 80}
-                  className="rounded-full mx-auto border-4 border-red-500"
+                  width={140}
+                  height={140}
+                  className="object-cover transition-transform duration-700 group-hover:scale-110"
                 />
               </div>
-              <p className="text-white mt-2 font-medium">{creator.name}</p>
+
+              {/* Glow effect for center image */}
+              {isCenter && (
+                <div className="absolute inset-0 rounded-full border-4 border-red-500 shadow-red-500/50 shadow-2xl animate-pulse" />
+              )}
+            </div>
+
+            <div
+              className={`mt-4 text-center transition-all duration-700 ${
+                isCenter ? "transform translate-y-0" : "transform translate-y-2"
+              }`}
+            >
+              <p
+                className={`font-semibold transition-all duration-700 ${
+                  isCenter ? "text-white text-lg" : "text-gray-300 text-base"
+                }`}
+              >
+                {creator.name}
+              </p>
+              {isCenter && (
+                <div className="w-8 h-0.5 bg-red-500 mx-auto mt-2 transition-all duration-700" />
+              )}
             </div>
           </div>
         );

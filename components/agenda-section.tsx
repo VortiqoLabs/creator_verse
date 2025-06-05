@@ -9,6 +9,7 @@ import dilshan from "@/public/images/dilshan.png";
 import lochi from "@/public/images/lochi.jpg";
 import kaali from "@/public/images/kaali.jpeg";
 import wildcook from "@/public/images/wildcookbook.jpeg";
+import { FadeInWhenVisible, SlideInFromLeft } from "./scroll-animations";
 
 interface AgendaItem {
   time: string;
@@ -150,30 +151,34 @@ export default function AgendaSection() {
     <section
       id="agenda"
       ref={sectionRef}
-      className="bg-gradient-to-b from-black via-red-600 to-black py-20"
+      className="relative bg-gradient-to-b from-black via-red-600 to-black py-20"
     >
       <div className="container mx-auto px-6 lg:px-20">
-        <div className="mb-12">
-          <div className="text-sm text-gray-400 mb-4 flex items-center">
-            <div className="w-8 h-px bg-white mr-3"></div>
-            Event agenda
+        <SlideInFromLeft>
+          <div className="mb-12">
+            <div className="text-sm text-gray-400 mb-4 flex items-center">
+              <div className="w-8 h-px bg-white mr-3"></div>
+              Event agenda
+            </div>
+            <h2 className="text-4xl md:text-6xl font-bold text-white mb-4">
+              Discover the Full CreatorVerse
+            </h2>
+            <h3 className="text-3xl md:text-4xl text-gray-400">
+              Summit Event Agenda
+            </h3>
           </div>
-          <h2 className="text-4xl md:text-6xl font-bold text-white mb-4">
-            Discover the Full CreatorVerse
-          </h2>
-          <h3 className="text-3xl md:text-4xl text-gray-400">
-            Summit Event Agenda
-          </h3>
-        </div>
+        </SlideInFromLeft>
 
-        <div className="flex flex-col lg:flex-row gap-4 mb-8">
-          <div className="bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold lg:w-48">
-            Kickoff
+        <FadeInWhenVisible>
+          <div className="flex flex-col lg:flex-row gap-4 mb-8">
+            <div className="bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold lg:w-48">
+              Kickoff
+            </div>
+            <div className="bg-gray-800 text-white px-6 py-3 rounded-lg flex-1">
+              <h4 className="text-xl font-semibold">Day 1: Main Conference</h4>
+            </div>
           </div>
-          <div className="bg-gray-800 text-white px-6 py-3 rounded-lg flex-1">
-            <h4 className="text-xl font-semibold">Day 1: Main Conference</h4>
-          </div>
-        </div>
+        </FadeInWhenVisible>
 
         <div className="flex">
           {/* Stepper - Fixed height spanning the entire agenda content */}
@@ -190,67 +195,71 @@ export default function AgendaSection() {
           {/* Agenda Items */}
           <div className="flex-1 space-y-8">
             {agendaItems.map((item, index) => (
-              <div
-                key={index}
-                ref={(el) => (itemRefs.current[index] = el)}
-                className="grid lg:grid-cols-4 gap-6 items-start min-h-[200px]"
-              >
-                <div className="text-white font-medium text-lg">
-                  {item.time}
-                </div>
-                <div className="lg:col-span-3 bg-gray-900 rounded-lg p-6">
-                  <h4 className="text-white text-xl font-semibold mb-3">
-                    {item.title}
-                  </h4>
-                  <p className="text-gray-300 leading-relaxed mb-4">
-                    {item.description}
-                  </p>
+              <FadeInWhenVisible key={index} delay={0.1 * index}>
+                <div
+                  ref={(el) => (itemRefs.current[index] = el)}
+                  className="grid lg:grid-cols-4 gap-6 items-start min-h-[200px]"
+                >
+                  <div className="text-white font-medium text-lg">
+                    {item.time}
+                  </div>
+                  <div className="lg:col-span-3 bg-gray-900 rounded-lg p-6">
+                    <h4 className="text-white text-xl font-semibold mb-3">
+                      {item.title}
+                    </h4>
+                    <p className="text-gray-300 leading-relaxed mb-4">
+                      {item.description}
+                    </p>
 
-                  {item.speaker && (
-                    <div className="flex items-center space-x-4">
-                      <Image
-                        src={item.speaker.image || "/placeholder.svg"}
-                        alt={item.speaker.name}
-                        width={60}
-                        height={60}
-                        className="rounded-full"
-                      />
-                      <div>
-                        <p className="text-white font-medium">
-                          {item.speaker.name}
-                        </p>
-                        <p className="text-gray-400 text-sm">
-                          {item.speaker.title}
-                        </p>
-                      </div>
-                    </div>
-                  )}
-
-                  {item.panelists && (
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mt-6">
-                      {item.panelists.map((panelist, idx) => (
-                        <div key={idx} className="flex items-center space-x-3">
-                          <Image
-                            src={panelist.image || "/placeholder.svg"}
-                            alt={panelist.name}
-                            width={50}
-                            height={50}
-                            className="rounded-full"
-                          />
-                          <div>
-                            <p className="text-white font-medium text-sm">
-                              {panelist.name}
-                            </p>
-                            <p className="text-gray-400 text-xs">
-                              {panelist.title}
-                            </p>
-                          </div>
+                    {item.speaker && (
+                      <div className="flex items-center space-x-4">
+                        <Image
+                          src={item.speaker.image || "/placeholder.svg"}
+                          alt={item.speaker.name}
+                          width={60}
+                          height={60}
+                          className="rounded-full"
+                        />
+                        <div>
+                          <p className="text-white font-medium">
+                            {item.speaker.name}
+                          </p>
+                          <p className="text-gray-400 text-sm">
+                            {item.speaker.title}
+                          </p>
                         </div>
-                      ))}
-                    </div>
-                  )}
+                      </div>
+                    )}
+
+                    {item.panelists && (
+                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mt-6">
+                        {item.panelists.map((panelist, idx) => (
+                          <div
+                            key={idx}
+                            className="flex items-center space-x-3"
+                          >
+                            <Image
+                              src={panelist.image || "/placeholder.svg"}
+                              alt={panelist.name}
+                              width={50}
+                              height={50}
+                              className="rounded-full"
+                            />
+                            <div>
+                              <p className="text-white font-medium text-sm">
+                                {panelist.name}
+                              </p>
+                              <p className="text-gray-400 text-xs">
+                                {panelist.title}
+                              </p>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
                 </div>
-              </div>
+              </FadeInWhenVisible>
             ))}
           </div>
         </div>
