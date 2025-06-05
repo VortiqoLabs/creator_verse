@@ -1,3 +1,6 @@
+"use client";
+
+import { useEffect } from "react";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import {
@@ -19,6 +22,13 @@ import MobileMenu from "@/components/mobile-menu";
 import CreatorCarousel from "@/components/creator-carousel";
 import SubAboutSection from "@/components/sub-about-section";
 import GallerySection from "@/components/gallery-section";
+import {
+  FadeInWhenVisible,
+  SlideInFromLeft,
+  SlideInFromRight,
+  ScaleIn,
+} from "@/components/scroll-animations";
+import { motion } from "framer-motion";
 import logo from "@/public/images/logo.svg";
 import heroImage from "@/public/images/hero.jpg";
 import team1 from "@/public/images/team1.jpg";
@@ -93,23 +103,30 @@ export default function CreatorsMeetup() {
     },
   ];
 
+  useEffect(() => {
+    // Smooth scroll setup
+    document.documentElement.style.scrollBehavior = "smooth";
+    return () => {
+      document.documentElement.style.scrollBehavior = "";
+    };
+  }, []);
+
   return (
     <>
       <Preloader />
       <div className="min-h-screen">
-        {/* Hero Section */}
-        <section
-          id="hero"
-          className="relative h-screen flex items-center justify-center"
-        >
-          <div className="absolute inset-0 bg-gradient-to-br from-black/70 to-black/50 z-10" />
-          <Image
-            src={heroImage}
-            alt="Hero Background"
-            fill
-            className="object-cover"
-            priority
-          />
+        {/* Fixed Hero Section */}
+        <section id="hero" className="fixed top-0 left-0 w-full h-screen z-0">
+          <div className="absolute inset-0">
+            <Image
+              src={heroImage}
+              alt="Hero Background"
+              fill
+              className="object-cover"
+              priority
+            />
+            <div className="absolute inset-0 bg-gradient-to-br from-black/70 to-black/50" />
+          </div>
 
           {/* Header */}
           <header className="absolute top-0 left-0 right-0 z-20 p-6">
@@ -125,214 +142,254 @@ export default function CreatorsMeetup() {
           </header>
 
           {/* Hero Content */}
-          <div className="relative z-20 text-center text-white px-6">
-            <h1 className="text-5xl md:text-7xl font-bold mb-8">
-              CreatorVerse 2025
-            </h1>
-            <Button
-              size="lg"
-              className="bg-red-600 hover:bg-red-700 text-white px-8 py-4 text-lg mb-8"
-            >
-              Buy Tickets
-            </Button>
+          <div className="relative h-full flex items-center justify-center">
+            <div className="text-center text-white px-6">
+              <motion.div
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.8, delay: 0.4 }}
+              >
+                <Button
+                  size="lg"
+                  className="bg-red-600 hover:bg-red-700 text-white px-8 py-4 text-lg mb-8"
+                >
+                  Buy Tickets
+                </Button>
+              </motion.div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
-              <AnimatedInfoBox
-                icon={<MapPin className="w-6 h-6" />}
-                text="San Francisco, CA"
-              />
-              <AnimatedInfoBox
-                icon={<Calendar className="w-6 h-6" />}
-                text="March 15-16, 2024"
-              />
-              <AnimatedInfoBox
-                icon={<Clock className="w-6 h-6" />}
-                text="9:00 AM - 6:00 PM"
-              />
+              <motion.div
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, delay: 0.6 }}
+                className="flex flex-col md:flex-row items-center justify-center space-y-4 md:space-y-0 md:space-x-8 text-lg"
+              >
+                <AnimatedInfoBox
+                  icon={<MapPin className="w-6 h-6" />}
+                  text="San Francisco, CA"
+                />
+                <AnimatedInfoBox
+                  icon={<Calendar className="w-6 h-6" />}
+                  text="March 15-16, 2024"
+                />
+                <AnimatedInfoBox
+                  icon={<Clock className="w-6 h-6" />}
+                  text="9:00 AM - 6:00 PM"
+                />
+              </motion.div>
             </div>
           </div>
         </section>
 
-        {/* About Section */}
-        <section id="about" className="bg-black py-20">
-          <div className="container mx-auto px-6 lg:px-20">
-            <div className="mb-12">
-              <div className="text-sm text-gray-400 mb-4 flex items-center">
-                <div className="w-8 h-px bg-white mr-3"></div>
-                About CreatorVerse
-              </div>
-              <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
-                What is CreatorVerse?
-              </h2>
-              <p className="text-gray-300 text-lg leading-relaxed max-w-4xl">
-                CreatorVerse is the ultimate gathering for digital creators,
-                innovators, and visionaries. Join us for two days of inspiring
-                talks, hands-on workshops, and networking opportunities that
-                will transform your creative journey. Connect with industry
-                leaders, discover cutting-edge tools, and be part of the
-                community that's shaping the future of digital creativity.
-              </p>
+        {/* Content Container - This will scroll over the fixed hero */}
+        <div className="relative">
+          {/* Spacer to push content down past the hero */}
+          <div className="h-screen"></div>
+
+          {/* About Section - First section that overlays the hero */}
+          <section id="about" className="relative bg-black py-10 z-10">
+            <div className="container mx-auto px-6 lg:px-20">
+              <SlideInFromLeft>
+                <div className="mb-12">
+                  <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
+                    What is CreatorVerse?
+                  </h2>
+                  <p className="text-gray-300 text-lg leading-relaxed max-w-4xl">
+                    CreatorVerse is the ultimate gathering for digital creators,
+                    innovators, and visionaries. Join us for two days of
+                    inspiring talks, hands-on workshops, and networking
+                    opportunities that will transform your creative journey.
+                    Connect with industry leaders, discover cutting-edge tools,
+                    and be part of the community that's shaping the future of
+                    digital creativity.
+                  </p>
+                </div>
+              </SlideInFromLeft>
             </div>
+          </section>
 
-            <CreatorCarousel />
-          </div>
-        </section>
+          {/* Sub About Section */}
+          <section id="sub-about" className="relative bg-black z-10">
+            <FadeInWhenVisible>
+              <SubAboutSection />
+            </FadeInWhenVisible>
 
-        {/* Sub About Section */}
-        <SubAboutSection />
+            <FadeInWhenVisible>
+              <CreatorCarousel />
+            </FadeInWhenVisible>
+          </section>
 
-        {/* Agenda Section */}
-        <AgendaSection />
+          {/* Agenda Section */}
+          <FadeInWhenVisible>
+            <AgendaSection />
+          </FadeInWhenVisible>
 
-        {/* Team Section */}
-        <section id="team" className="bg-black py-20">
-          <div className="container mx-auto px-6 lg:px-20">
-            <div className="mb-16">
-              <div className="text-sm text-gray-400 mb-4 flex items-center ">
-                <div className="w-8 h-px bg-white mr-3"></div>
-                Our Speakers
-              </div>
-              <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
-                Meet Our Esteemed Speakers
-              </h2>
-              <h3 className="text-2xl md:text-3xl text-gray-400">
-                and Industry Thought Leaders
-              </h3>
-            </div>
+          {/* Team Section */}
+          <section id="team" className="relative bg-black py-20 z-10">
+            <div className="container mx-auto px-6 lg:px-20">
+              <SlideInFromLeft>
+                <div className="mb-16">
+                  <div className="text-sm text-gray-400 mb-4 flex items-center">
+                    <div className="w-8 h-px bg-white mr-3"></div>
+                    Our Speakers
+                  </div>
+                  <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
+                    Meet Our Esteemed Speakers
+                  </h2>
+                  <h3 className="text-2xl md:text-3xl text-gray-400">
+                    and Industry Thought Leaders
+                  </h3>
+                </div>
+              </SlideInFromLeft>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8">
-              {teamMembers.map((member, index) => (
-                <div key={index} className="text-center group">
-                  <div className="relative mb-4 overflow-hidden rounded-lg">
-                    <Image
-                      src={member.image || "/placeholder.svg"}
-                      alt={member.name}
-                      width={300}
-                      height={300}
-                      className="w-full h-80 object-cover transition-transform duration-300 group-hover:scale-105"
-                    />
-                    <div className="absolute bottom-4 right-4 flex space-x-2">
-                      <div className="bg-white/20 backdrop-blur-sm rounded-full p-2">
-                        <Instagram className="w-4 h-4 text-white" />
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8">
+                {teamMembers.map((member, index) => (
+                  <ScaleIn key={index} delay={0.1 * index}>
+                    <div className="group">
+                      <div className="relative mb-4 overflow-hidden rounded-lg">
+                        <Image
+                          src={member.image || "/placeholder.svg"}
+                          alt={member.name}
+                          width={300}
+                          height={300}
+                          className="w-full h-80 object-cover transition-transform duration-300 group-hover:scale-105"
+                        />
+                        <div className="absolute bottom-4 right-4 flex space-x-2">
+                          <div className="bg-white/20 backdrop-blur-sm rounded-full p-2">
+                            <Instagram className="w-4 h-4 text-white" />
+                          </div>
+                          <div className="bg-white/20 backdrop-blur-sm rounded-full p-2">
+                            <Linkedin className="w-4 h-4 text-white" />
+                          </div>
+                        </div>
                       </div>
-                      <div className="bg-white/20 backdrop-blur-sm rounded-full p-2">
-                        <Linkedin className="w-4 h-4 text-white" />
+                      <h4 className="text-white text-xl font-semibold mb-2">
+                        {member.name}
+                      </h4>
+                      <p className="text-gray-400">{member.title}</p>
+                    </div>
+                  </ScaleIn>
+                ))}
+              </div>
+            </div>
+          </section>
+
+          {/* Gallery Section */}
+          <section id="gallery" className="relative bg-black py-20 z-10">
+            <FadeInWhenVisible>
+              <GallerySection />
+            </FadeInWhenVisible>
+          </section>
+
+          {/* FAQ Section */}
+          <section id="faq" className="relative bg-black py-20 z-10">
+            <div className="container mx-auto px-6 lg:px-20">
+              <div className="grid lg:grid-cols-2 gap-12">
+                <SlideInFromLeft>
+                  <div>
+                    <div className="text-sm text-gray-400 mb-4 flex items-center">
+                      <div className="w-8 h-px bg-white mr-3"></div>
+                      Questions
+                    </div>
+                    <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
+                      All the Important Details
+                    </h2>
+                    <h3 className="text-3xl md:text-4xl text-gray-400">
+                      Before Attending{" "}
+                      <span className="text-white">CreatorVerse</span>
+                    </h3>
+                  </div>
+                </SlideInFromLeft>
+
+                <SlideInFromRight>
+                  <div>
+                    <Accordion type="single" collapsible className="space-y-4">
+                      {faqItems.map((item, index) => (
+                        <AccordionItem
+                          key={index}
+                          value={`item-${index}`}
+                          className="bg-gray-900 rounded-lg px-6 border-none"
+                        >
+                          <AccordionTrigger className="text-white hover:no-underline py-6">
+                            {item.question}
+                          </AccordionTrigger>
+                          <AccordionContent className="text-gray-300 pb-6">
+                            {item.answer}
+                          </AccordionContent>
+                        </AccordionItem>
+                      ))}
+                    </Accordion>
+                  </div>
+                </SlideInFromRight>
+              </div>
+            </div>
+            <RainDrops />
+          </section>
+
+          {/* Footer */}
+          <footer className="relative bg-black z-10 border-t border-gray-800">
+            <div className="container mx-auto px-6 lg:px-20 py-12">
+              <div className="flex flex-col md:flex-row justify-between items-center">
+                <FadeInWhenVisible>
+                  <div>
+                    <h4 className="text-white text-lg mb-4">Social</h4>
+                    <div className="flex space-x-4">
+                      <div className="bg-white/10 rounded-full p-3 hover:bg-white/20 transition-colors">
+                        <Facebook className="w-5 h-5 text-white" />
+                      </div>
+                      <div className="bg-white/10 rounded-full p-3 hover:bg-white/20 transition-colors">
+                        <Instagram className="w-5 h-5 text-white" />
+                      </div>
+                      <div className="bg-white/10 rounded-full p-3 hover:bg-white/20 transition-colors">
+                        <Linkedin className="w-5 h-5 text-white" />
+                      </div>
+                      <div className="bg-white/10 rounded-full p-3 hover:bg-white/20 transition-colors">
+                        <Twitter className="w-5 h-5 text-white" />
                       </div>
                     </div>
                   </div>
-                  <h4 className="text-white text-xl font-semibold mb-2">
-                    {member.name}
-                  </h4>
-                  <p className="text-gray-400">{member.title}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
+                </FadeInWhenVisible>
 
-        {/* Gallery Section */}
-        <GallerySection />
-
-        {/* FAQ Section */}
-        <section id="faq" className="relative bg-black py-20 overflow-hidden">
-          <div className="container mx-auto px-6 lg:px-20 relative z-10">
-            <div className="grid lg:grid-cols-2 gap-12">
-              <div>
-                <div className="text-sm text-gray-400 mb-4 flex items-center">
-                  <div className="w-8 h-px bg-white mr-3"></div>
-                  Questions
-                </div>
-                <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
-                  All the Important Details
-                </h2>
-                <h3 className="text-3xl md:text-4xl text-gray-400">
-                  Before Attending{" "}
-                  <span className="text-white">CreatorVerse</span>
-                </h3>
-              </div>
-
-              <div>
-                <Accordion type="single" collapsible className="space-y-4">
-                  {faqItems.map((item, index) => (
-                    <AccordionItem
-                      key={index}
-                      value={`item-${index}`}
-                      className="bg-gray-900 rounded-lg px-6 border-none"
+                <FadeInWhenVisible delay={0.2}>
+                  <div className="flex flex-wrap gap-4 my-8 md:my-0">
+                    <Button
+                      variant="outline"
+                      className="bg-gray-800 border-gray-600 text-white hover:bg-gray-700"
                     >
-                      <AccordionTrigger className="text-white hover:no-underline py-6">
-                        {item.question}
-                      </AccordionTrigger>
-                      <AccordionContent className="text-gray-300 pb-6">
-                        {item.answer}
-                      </AccordionContent>
-                    </AccordionItem>
-                  ))}
-                </Accordion>
+                      Speakers
+                    </Button>
+                    <Button
+                      variant="outline"
+                      className="bg-gray-800 border-gray-600 text-white hover:bg-gray-700"
+                    >
+                      Agenda
+                    </Button>
+                    <Button
+                      variant="outline"
+                      className="bg-gray-800 border-gray-600 text-white hover:bg-gray-700"
+                    >
+                      Venue
+                    </Button>
+                    <Button
+                      variant="outline"
+                      className="bg-gray-800 border-gray-600 text-white hover:bg-gray-700"
+                    >
+                      Contact
+                    </Button>
+                  </div>
+                </FadeInWhenVisible>
               </div>
-            </div>
-          </div>
-          <RainDrops />
-        </section>
 
-        {/* Footer */}
-        <footer className="bg-black border-t border-gray-800 ">
-          <div className="container mx-auto px-6 lg:px-20 py-12">
-            <div className="flex flex-col md:flex-row justify-between items-center">
-              <div>
-                <h4 className="text-white text-lg mb-4">Social</h4>
-                <div className="flex space-x-4">
-                  <div className="bg-white/10 rounded-full p-3 hover:bg-white/20 transition-colors">
-                    <Facebook className="w-5 h-5 text-white" />
-                  </div>
-                  <div className="bg-white/10 rounded-full p-3 hover:bg-white/20 transition-colors">
-                    <Instagram className="w-5 h-5 text-white" />
-                  </div>
-                  <div className="bg-white/10 rounded-full p-3 hover:bg-white/20 transition-colors">
-                    <Linkedin className="w-5 h-5 text-white" />
-                  </div>
-                  <div className="bg-white/10 rounded-full p-3 hover:bg-white/20 transition-colors">
-                    <Twitter className="w-5 h-5 text-white" />
-                  </div>
+              <FadeInWhenVisible delay={0.3}>
+                <div className="border-t border-gray-800 mt-8 pt-8 flex flex-col md:flex-row justify-between items-center text-gray-400">
+                  <p>All copyrights @creatorverse</p>
+                  <p>Terms and Conditions</p>
+                  <p>Designed By CreatorVerse Team @creatorverse.com</p>
                 </div>
-              </div>
-
-              <div className="flex flex-wrap gap-4 my-8 md:my-0">
-                <Button
-                  variant="outline"
-                  className="bg-gray-800  text-white hover:bg-white/20 transition-colors"
-                >
-                  Speakers
-                </Button>
-                <Button
-                  variant="outline"
-                  className="bg-gray-800  text-white hover:bg-white/20 transition-colors"
-                >
-                  Agenda
-                </Button>
-                <Button
-                  variant="outline"
-                  className="bg-gray-800  text-white hover:bg-white/20 transition-colors"
-                >
-                  Venue
-                </Button>
-                <Button
-                  variant="outline"
-                  className="bg-gray-800  text-white hover:bg-white/20 transition-colors"
-                >
-                  Contact
-                </Button>
-              </div>
+              </FadeInWhenVisible>
             </div>
-
-            <div className="border-t border-gray-800 mt-8 pt-8 flex flex-col md:flex-row justify-between items-center text-gray-400">
-              <p>All copyrights @Vortiqo Labs</p>
-              <p>Terms and Conditions</p>
-              <p>Designed By Vortiqo Labs</p>
-            </div>
-          </div>
-        </footer>
+          </footer>
+        </div>
       </div>
     </>
   );
 }
-``;
