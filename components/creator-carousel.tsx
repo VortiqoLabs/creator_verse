@@ -17,99 +17,115 @@ const creators = [
 ];
 
 export default function CreatorCarousel() {
-  const [currentIndex, setCurrentIndex] = useState(2);
+  const [currentImages, setCurrentImages] = useState(creators);
+  const [mobileCurrentIndex, setMobileCurrentIndex] = useState(0);
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentIndex((prev) => (prev + 1) % creators.length);
-    }, 4000);
-
-    return () => clearInterval(interval);
-  }, []);
-
-  const getVisibleCreators = () => {
-    const visible = [];
-    for (let i = -2; i <= 2; i++) {
-      const index = (currentIndex + i + creators.length) % creators.length;
-      visible.push({
-        ...creators[index],
-        position: i,
-        isCenter: i === 0,
-      });
+  // Function to shuffle array
+  const shuffleArray = (array: typeof creators) => {
+    const newArray = [...array];
+    for (let i = newArray.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
     }
-    return visible;
+    return newArray;
   };
 
+  useEffect(() => {
+    // Desktop: Randomly shuffle all images
+    const desktopInterval = setInterval(() => {
+      setCurrentImages(shuffleArray(creators));
+    }, 3000);
+
+    // Mobile: Change single image randomly
+    const mobileInterval = setInterval(() => {
+      setMobileCurrentIndex(Math.floor(Math.random() * creators.length));
+    }, 2500);
+
+    return () => {
+      clearInterval(desktopInterval);
+      clearInterval(mobileInterval);
+    };
+  }, []);
+
   return (
-    <div className="flex items-center justify-center space-x-6 mt-12 px-4">
-      {getVisibleCreators().map((creator, index) => {
-        const { position, isCenter } = creator;
+    <div className="mt-16">
+      {/* Desktop Layout - 5 boxes with random image swapping */}
+      <div className="hidden md:flex items-end justify-center space-x-6 lg:space-x-8">
+        {currentImages.map((creator, index) => {
+          // Alternating height pattern: normal, higher, normal, higher, normal
+          const isHigher = index % 2 === 1;
 
-        // Calculate scale and opacity based on position
-        let scale = 1;
-        let opacity = 0.4;
-        let zIndex = 1;
-
-        if (isCenter) {
-          scale = 1.4;
-          opacity = 1;
-          zIndex = 10;
-        } else if (Math.abs(position) === 1) {
-          scale = 1.1;
-          opacity = 0.8;
-          zIndex = 5;
-        } else {
-          scale = 0.9;
-          opacity = 0.5;
-          zIndex = 1;
-        }
-
-        return (
-          <div
-            key={`${creator.id}-${currentIndex}`}
-            className="flex flex-col items-center transition-all duration-700 ease-in-out transform"
-            style={{
-              transform: `scale(${scale})`,
-              opacity,
-              zIndex,
-            }}
-          >
-            <div className="relative group">
-              <div className="relative overflow-hidden rounded-full border-4 border-red-500 shadow-2xl">
-                <Image
-                  src={creator.image || "/placeholder.svg"}
-                  alt={creator.name}
-                  width={140}
-                  height={140}
-                  className="object-cover transition-transform duration-700 group-hover:scale-110"
-                />
-              </div>
-
-              {/* Glow effect for center image */}
-              {isCenter && (
-                <div className="absolute inset-0 rounded-full border-4 border-red-500 shadow-red-500/50 shadow-2xl animate-pulse" />
-              )}
-            </div>
-
+          return (
             <div
-              className={`mt-4 text-center transition-all duration-700 ${
-                isCenter ? "transform translate-y-0" : "transform translate-y-2"
+              key={`desktop-${index}`}
+              className={`transition-all duration-700 ease-in-out ${
+                isHigher ? "transform -translate-y-8" : ""
               }`}
             >
-              <p
-                className={`font-semibold transition-all duration-700 ${
-                  isCenter ? "text-white text-lg" : "text-gray-300 text-base"
-                }`}
-              >
-                {creator.name}
-              </p>
-              {isCenter && (
-                <div className="w-8 h-0.5 bg-red-500 mx-auto mt-2 transition-all duration-700" />
-              )}
+              <div className="group cursor-pointer">
+                {/* Card Container */}
+                <div className="relative overflow-hidden bg-gray-800 rounded-lg shadow-xl">
+                  {/* Image */}
+                  <div className="relative w-40 h-40">
+                    <Image
+                      src={creator.image || "/placeholder.svg"}
+                      alt={creator.name}
+                      fill
+                      className="object-cover transition-all duration-700 ease-in-out group-hover:scale-105"
+                    />
+                  </div>
+                </div>
+
+                {/* Name only - no title */}
+                <div className="mt-4 text-center">
+                  <h3 className="text-white text-lg font-bold">
+                    {creator.name}
+                  </h3>
+                </div>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
+      {/* Mobile Layout - Single box with random image changes */}
+      <div className="md:hidden flex flex-col items-center">
+        <div className="group cursor-pointer">
+          {/* Card Container */}
+          <div className="relative overflow-hidden bg-gray-800 rounded-lg shadow-xl">
+            {/* Image */}
+            <div className="relative w-64 h-80">
+              <Image
+                src={creators[mobileCurrentIndex].image || "/placeholder.svg"}
+                alt={creators[mobileCurrentIndex].name}
+                fill
+                className="object-cover transition-all duration-700 ease-in-out group-hover:scale-105"
+              />
             </div>
           </div>
-        );
-      })}
+
+          {/* Name only - no title */}
+          <div className="mt-4 text-center">
+            <h3 className="text-white text-xl font-bold">
+              {creators[mobileCurrentIndex].name}
+            </h3>
+          </div>
+        </div>
+      </div>
+
+      {/* Mobile Indicator Dots */}
+      <div className="md:hidden flex justify-center mt-6 space-x-2">
+        {creators.map((_, index) => (
+          <div
+            key={index}
+            className={`w-2 h-2 rounded-full transition-all duration-300 ${
+              index === mobileCurrentIndex
+                ? "bg-red-500 scale-125"
+                : "bg-gray-600"
+            }`}
+          />
+        ))}
+      </div>
     </div>
   );
 }

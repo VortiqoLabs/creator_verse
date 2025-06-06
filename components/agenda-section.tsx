@@ -92,60 +92,59 @@ export default function AgendaSection() {
     },
   ];
 
-  useEffect(() => {
-    const handleScroll = () => {
-      if (!sectionRef.current) return;
+  //   const handleScroll = () => {
+  //     if (!sectionRef.current) return;
 
-      const section = sectionRef.current;
-      const sectionRect = section.getBoundingClientRect();
-      const sectionTop = sectionRect.top;
-      const sectionHeight = sectionRect.height;
-      const windowHeight = window.innerHeight;
+  //     const section = sectionRef.current;
+  //     const sectionRect = section.getBoundingClientRect();
+  //     const sectionTop = sectionRect.top;
+  //     const sectionHeight = sectionRect.height;
+  //     const windowHeight = window.innerHeight;
 
-      // Calculate overall progress through the section
-      const progress = Math.max(
-        0,
-        Math.min(
-          1,
-          (windowHeight - sectionTop) / (sectionHeight + windowHeight)
-        )
-      );
-      setScrollProgress(progress);
+  //     // Calculate overall progress through the section
+  //     const progress = Math.max(
+  //       0,
+  //       Math.min(
+  //         1,
+  //         (windowHeight - sectionTop) / (sectionHeight + windowHeight)
+  //       )
+  //     );
+  //     setScrollProgress(progress);
 
-      // Find which item is currently most visible
-      let mostVisibleIndex = 0;
-      let maxVisibility = 0;
+  //     // Find which item is currently most visible
+  //     let mostVisibleIndex = 0;
+  //     let maxVisibility = 0;
 
-      itemRefs.current.forEach((ref, index) => {
-        if (!ref) return;
+  //     itemRefs.current.forEach((ref, index) => {
+  //       if (!ref) return;
 
-        const rect = ref.getBoundingClientRect();
-        const itemTop = rect.top;
-        const itemBottom = rect.bottom;
-        const itemHeight = rect.height;
+  //       const rect = ref.getBoundingClientRect();
+  //       const itemTop = rect.top;
+  //       const itemBottom = rect.bottom;
+  //       const itemHeight = rect.height;
 
-        // Calculate how much of the item is visible
-        const visibleTop = Math.max(
-          0,
-          Math.min(itemHeight, windowHeight - itemTop)
-        );
-        const visibleBottom = Math.max(0, Math.min(itemHeight, itemBottom));
-        const visibility = Math.min(visibleTop, visibleBottom) / itemHeight;
+  //       // Calculate how much of the item is visible
+  //       const visibleTop = Math.max(
+  //         0,
+  //         Math.min(itemHeight, windowHeight - itemTop)
+  //       );
+  //       const visibleBottom = Math.max(0, Math.min(itemHeight, itemBottom));
+  //       const visibility = Math.min(visibleTop, visibleBottom) / itemHeight;
 
-        if (visibility > maxVisibility) {
-          maxVisibility = visibility;
-          mostVisibleIndex = index;
-        }
-      });
+  //       if (visibility > maxVisibility) {
+  //         maxVisibility = visibility;
+  //         mostVisibleIndex = index;
+  //       }
+  //     });
 
-      setActiveStep(mostVisibleIndex);
-    };
+  //     setActiveStep(mostVisibleIndex);
+  //   };
 
-    window.addEventListener("scroll", handleScroll);
-    handleScroll(); // Initial call
+  //   window.addEventListener("scroll", handleScroll);
+  //   handleScroll(); // Initial call
 
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+  //   return () => window.removeEventListener("scroll", handleScroll);
+  // }, []);
 
   return (
     <section

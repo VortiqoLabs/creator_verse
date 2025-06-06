@@ -42,11 +42,7 @@ export default function AgendaStepper({
           >
             <motion.div
               className={`w-3 h-3 rounded-full border-2 transition-all duration-300 ${
-                isPassed
-                  ? "bg-black border-black"
-                  : isActive
-                  ? "bg-white border-black"
-                  : "bg-white border-white"
+                isPassed ? "bg-black" : isActive ? "bg-white " : "bg-white "
               }`}
               animate={{
                 scale: isActive ? [1, 1.3, 1] : 1,
