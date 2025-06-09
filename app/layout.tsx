@@ -1,64 +1,15 @@
 import type React from "react";
 import type { Metadata } from "next";
+import { Inter } from "next/font/google";
 import "./globals.css";
+import { ThemeProvider } from "@/components/theme-provider";
+
+const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "CreatorVerse",
-  description:
-    "The ultimate gathering for digital creators, innovators, and visionaries. Join us for inspiring talks, workshops, and networking opportunities.",
-  generator: "Vortiqo Labs",
-  keywords: [
-    "CreatorVerse",
-    "Digital Creators",
-    "Innovation",
-    "Networking",
-    "Workshops",
-    "Conference",
-  ],
-  authors: [{ name: "Vortiqo Labs" }],
-  creator: "Vortiqo Labs",
-  publisher: "Vortiqo Labs",
-  icons: {
-    icon: "/images/logo.svg",
-    shortcut: "/images/logo.svg",
-    apple: "/images/logo.svg",
-  },
-  openGraph: {
-    title: "CreatorVerse - Digital Creators Summit",
-    description:
-      "Join the ultimate gathering for digital creators, innovators, and visionaries. March 15-16, 2024 in San Francisco.",
-    url: "https://creatorverse.com",
-    siteName: "CreatorVerse",
-    images: [
-      {
-        url: "/images/hero.jpg",
-        width: 1200,
-        height: 630,
-        alt: "CreatorVerse Summit 2024",
-      },
-    ],
-    locale: "en_US",
-    type: "website",
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "CreatorVerse - Digital Creators Summit",
-    description:
-      "Join the ultimate gathering for digital creators, innovators, and visionaries. March 15-16, 2024 in San Francisco.",
-    images: ["/images/hero.jpg"],
-    creator: "@creatorverse",
-  },
-  robots: {
-    index: true,
-    follow: true,
-    googleBot: {
-      index: true,
-      follow: true,
-      "max-video-preview": -1,
-      "max-image-preview": "large",
-      "max-snippet": -1,
-    },
-  },
+  title: "Concert Ticket Booking",
+  description: "Book tickets for your favorite concerts",
+  generator: "v0.dev",
 };
 
 export default function RootLayout({
@@ -69,12 +20,31 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-        <link rel="icon" href="/images/logo.svg" type="image/svg+xml" />
-        <link rel="apple-touch-icon" href="/images/logo.svg" />
-        <meta name="theme-color" content="#000000" />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link
+          href="https://fonts.cdnfonts.com/css/gilroy-bold"
+          rel="stylesheet"
+        />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link
+          rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossOrigin="anonymous"
+        />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Gilroy:wght@400;500;600;700;800&display=swap"
+          rel="stylesheet"
+        />
       </head>
-      <body>{children}</body>
+      <body className={inter.className}>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="light"
+          enableSystem
+          disableTransitionOnChange
+        >
+          {children}
+        </ThemeProvider>
+      </body>
     </html>
   );
 }
